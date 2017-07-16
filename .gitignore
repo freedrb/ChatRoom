@@ -1,0 +1,19 @@
+client/*-lock.json
+client/node_modules/
+client/build/
+client/.DS_Store
+client/dist/
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/test/unit/coverage
+client/test/e2e/reports
+client/selenium-debug.log
+client/.gitignore
+
+# Editor directories and files
+client/.idea
+client/*.suo
+client/*.ntvs*
+client/*.njsproj
+client/*.sln
