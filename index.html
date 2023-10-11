@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{
+	margin: 0;
+	padding: 0;
+}
+.canvas{
+	margin: 50px auto;
+	width: 800px;
+	height: 500px;
+}
+.canvasBox {
+	position: relative; 
+	border: 1px solid black;
+	padding: 2px;
+	display: inline-flex;
+}
+#canvas{
+	/* border: 1px solid black; */
+	display: inline-block;
+	position: relative;
+}
+#canvas1 {
+	position: absolute;
+	left: 0;
+	top: 0;
+	/* width: 100%;
+	height: 100%; */
+	/* border: 1px solid transparent; */
+}
+#tool{
+	position: absolute;
+	top: 50px;
+}
+.pen{
+	width: 80px;
+	line-height: 30px;
+	background: black;
+	position: absolute;
+	top: 40px;
+	left: 0px;
+	color:white;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	transition:all 1s;
+}
+.pen:hover{
+	left: 20px;
+}
+.pen:hover #colors{
+	display: block;
+}
+#colors{
+	display: none;
+	width: 120px;
+	height: 120px;
+	border: 1px solid black;
+	position: absolute;
+	left: 100px;
+	top: -35px;
+	transition:all 2s;
+}
+.color{
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	margin: 2px;
+}
+.color:hover{
+	cursor: pointer;
+}
+.pen::after{
+	content: '';
+    position: absolute;
+    border-width: 15px;
+    border-color: transparent transparent transparent black;
+    border-style: solid;
+    top: 0px;
+    right: -30px;
+}
+.red::after{
+	border-color: transparent transparent transparent red;
+}
+.blue::after{
+	border-color: transparent transparent transparent blue;
+}
+.green::after{
+	border-color: transparent transparent transparent green;
+}
+.gray::after{
+	border-color: transparent transparent transparent gray;
+}
+.pink::after{
+	border-color: transparent transparent transparent pink;
+}
+.yellow::after{
+	border-color: transparent transparent transparent yellow;
+}
+.orange::after{
+	border-color: transparent transparent transparent orange;
+}
+.black::after{
+	border-color: transparent transparent transparent black;
+}
+.eraser{
+	position: absolute;
+	top: 100px;
+	width: 80px;
+	line-height: 30px;
+	border: 1px solid black;
+	border-top-right-radius: 30px;
+	border-bottom-right-radius: 30px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+}
+.eraser:hover{
+	cursor: pointer;
+}
+.weight{
+	position: absolute;
+	top: 160px;
+	width: 200px;
+	line-height: 30px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+}
+input[type=range] {
+	-webkit-appearance:none;
+	width: 200px;
+	border-radius: 10px;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    height: 15px;
+    border-radius: 10px; /*将轨道设为圆角的*/
+    box-shadow: 0 1px 1px #def3f8, inset 0 .125em .125em #0d1112; /*轨道内置阴影效果*/
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 25px;
+    width: 25px;
+    margin-top: -5px; /*使滑块超出轨道部分的偏移量相等*/
+    background: #ffffff; 
+    border-radius: 50%; /*外观设置为圆形*/
+    border: solid 0.125em rgba(205, 224, 230, 0.5); /*设置边框*/
+    box-shadow: 0 .125em .125em #3b4547; /*添加底部阴影*/
+}
+#radius{
+	margin: 10px auto;
+	width: 15px;
+	height: 15px;
+	border-radius: 15px;
+	border: 1px solid black;
+}
+#img-upload{
+	position: absolute;
+	top: 280px;
+	width: 200px;
+}
+.operation{
+	position: absolute;
+	top: 320px;
+	width: 100px;
+}
+#picture{
+	position: absolute;
+	top: 400px;
+}
+#render,#download{
+	padding: 5px;
+	box-shadow: 0 0 3px 3px #ccc;
+	margin: 5px;
+	text-align: center;
+	transition:all 1s;
+}
+#download:hover,#render:hover{
+	padding: 5px;
+	border: 1px solid #ccc;
+	box-shadow: none;
+	cursor: pointer;
+	margin: 5px;
+	text-align: center;
+}
+
+	</style>
+</head>
+<body>
+    <div id="tool">
+    	<div class="pen">
+    	    <span>颜色</span>
+    	    <div id="colors"></div>
+    	</div>
+    	<div class="eraser">橡皮</div>
+    	<div class="weight">
+    		<span>粗细</span>
+    		<input type="range" value="50" id="progress"></input>
+    		<div id="radius"></div>
+    	</div>
+    	<form id="img-upload">
+    		<input type="file" id="file"></input><br>
+    			<!-- <input type="submit" value="上传图片"> -->
+    	</form>
+    	<div class="operation">
+    		<div id="render">渲染图片</div>
+    	    <div id="download">保存图片</div>
+    	</div>
+    	<div id="picture"></div>
+    </div>
+    <div class="canvas">
+		<div class="canvasBox">
+			<canvas id="canvas" width="800" height="500"></canvas>
+			<canvas id="canvas1" width="800" height="500">居然还在用不支持canvas的浏览器</canvas>
+		</div>
+	</div>
+	<div>
+		<img src="" id="canvasImg">
+	</div>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+	<script type="text/javascript">
+		var globalUser = {tool:'pen',color:'black',weight:15};
+	</script>
+    <script type="text/javascript">
+			function move(target,goal,speed) {
+	var timer;
+	if (!timer) {
+		timer = setInterval(function(){
+	        var left = parseInt(target.css('left'));
+	        if (left == goal) {
+	        	clearInterval(timer);
+	        }else {
+	        	left = left + speed + 'px';
+	        	target.css('left',left);
+	        }
+		},50);
+	}
+}
+
+function downloadFile(src) {
+    var a = document.createElement('a');
+    a.download = 'pic.png';
+    a.href = src;
+    $('#picture').append(a);
+    a.click();
+}
+
+function getClient(cvs,x,y) {
+    var box = cvs.getBoundingClientRect();
+	console.log(box.left, box.top)
+    return {x:x-box.left,y:y-box.top};
+}
+
+function draw(ctx,client,globalUser) {
+  if(globalUser.tool == 'eraser') {
+	ctx.beginPath();
+	ctx.clearRect(client.x,client.y,globalUser.weight,globalUser.weight);
+	ctx.closePath();
+  } else {
+	ctx.beginPath();
+    ctx.arc(client.x,client.y,globalUser.weight/2,0,2*Math.PI,false);
+    ctx.fillStyle = globalUser.color;
+    ctx.fill();
+    ctx.closePath();
+  }
+}
+
+$.fn.RangeSlider = function(cfg){
+    this.sliderCfg = {
+        min: cfg && !isNaN(parseFloat(cfg.min)) ? Number(cfg.min) : null, 
+        max: cfg && !isNaN(parseFloat(cfg.max)) ? Number(cfg.max) : null,
+        step: cfg && Number(cfg.step) ? cfg.step : 1,
+        callback: cfg && cfg.callback ? cfg.callback : null
+    };
+
+    var $input = $('#progress');
+    var min = this.sliderCfg.min;
+    var max = this.sliderCfg.max;
+    var step = this.sliderCfg.step;
+    var callback = this.sliderCfg.callback;
+
+    $input.attr('min', min)
+        .attr('max', max)
+        .attr('step', step);
+
+    $input.bind("input", function(e){
+        $input.attr('value', this.value);
+        $input.css( 'background', 'linear-gradient(to right, #059CFA, white ' + this.value + '%, white)' );
+
+        if ($.isFunction(callback)) {
+            callback($input);
+        }
+    });
+};
+
+
+(function () {
+	var colorArray = ['red','blue','green','yellow','gray',
+	    'pink','orange','black'];
+	var fragment = document.createDocumentFragment();
+	for (var i = 0; i < 9; i++) {
+		var div = document.createElement('div');
+		div.className = 'color';
+		div.style.backgroundColor = colorArray[i];	
+		div.onclick = changeColor.bind(div);
+		fragment.appendChild(div);
+	}
+
+	$('#colors').append(fragment);
+	$('.eraser').click(useEraser);
+	$('input').RangeSlider({ min: 0,   max: 100,  step: 0.1,  callback: change});
+
+	function changeColor(e) {
+		e.stopPropagation();
+		$('.pen').removeClass().addClass('pen '+this.style.backgroundColor);
+		move($('.eraser'),0,-4);
+		globalUser.tool = 'pen';
+		globalUser.color = this.style.backgroundColor;
+	}
+
+	function useEraser(e) {
+		e.stopPropagation();
+		console.log(44)
+		move($('.eraser'),20,4);
+		globalUser.tool = 'eraser';
+		globalUser.color = 'red';
+	}
+
+	function change(input) {
+		var weight = Math.floor(10*input.attr('value')/100) + 10;
+		globalUser.weight = weight;
+		$('#radius').css('width',weight);
+		$('#radius').css('height',weight);
+		$('#radius').css('borderRadius',weight);
+	}
+
+})();
+
+
+(function() {
+	var ismousedown = false,
+	    client,
+	    cvs = $('#canvas1'),
+	    ctx = cvs[0].getContext('2d');
+    
+    cvs.mousedown(function(ev) {
+    	ev.stopPropagation();
+    	ismousedown = true;
+    	client = getClient(cvs[0],ev.clientX,ev.clientY);
+		console.log(88, client)
+    	draw(ctx,client,globalUser);
+		
+    });
+
+    cvs.mousemove(function(ev) {
+    	ev.stopPropagation();
+    	if (ismousedown) {
+			
+    		client = getClient(cvs[0],ev.clientX,ev.clientY);
+    		draw(ctx,client,globalUser);
+    	}
+    });
+
+    cvs.mouseup(function(ev) {
+    	ismousedown = false;
+    });
+
+    cvs.mouseout(function(ev) {
+    	ismousedown = false;
+    })
+})();
+
+
+$('#file').change(function() {
+	if (typeof FileReader != 'undefined') {
+		var acceptedTypes = {
+	　　　　'image/png': true,
+	　　　　'image/jpeg': true,
+	　　　　'image/gif': true
+	　　};
+	let files = document.getElementById('file').files;
+	　　if (acceptedTypes[files[0].type] === true) {
+	　　　　var reader = new FileReader();
+	　　　　reader.onload = function (event) {
+	　　　　　　var image = new Image();
+	　　　　　　image.src = event.target.result;
+	            image.id = 'img';
+					image.onload = () => {
+						
+						// console.log(image.width, image.height);
+						// const bg = document.getElementById('canvas');
+						// bg.width = image.width;
+						// bg.height = image.height;
+						// const bg1 = document.getElementById('canvas1');
+						// bg1.width = image.width;
+						// bg1.height = image.height;
+						　image.width = 100;
+						$('#picture').append(image)
+					}
+	　　　　　　;
+	　　　　};
+	　　　　reader.readAsDataURL(files[0]);
+	　　}
+	};
+})
+$('#render').click(function() {
+	if ($('#img')) {
+        var ctx = $('#canvas')[0].getContext('2d');
+        var image = new Image();
+        image.src = $('#img').attr('src');
+        image.onload = function() {
+        	ctx.drawImage(image,0,0,$('#canvas')[0].width,$('#canvas')[0].height);
+        }
+	}
+})
+
+const saveFromCanvas = (imgData) => {
+	const width = imgData.width;
+	const height = imgData.height;
+
+
+	let top = 0, left = 0, right = imgData.width, bottom = imgData.height;
+
+	const pointLen = imgData.data.length;
+	for (let i=0;i<pointLen;i+=4){
+		if(imgData.data[i+3] !== 0) {
+		top = Math.floor(i/(4*width))
+		break;
+		}
+  }
+	for (let i=pointLen -1;i<pointLen;i-=4){
+		if(imgData.data[i] !== 0) {
+		bottom = Math.floor((i+1)/(4*width))
+		break;
+		}
+  }
+
+	for (let i=0;i<width;i++){
+		for(let j = 0; j< height; j++) {
+			let p = (j*width + i)*4;
+			if(imgData.data[p+3] !== 0) {
+				right = i
+				break;
+			}
+		}
+  }
+
+  for (let i=width;i>0;i--){
+		for(let j = height; j>0; j--) {
+			// let p = (i*j)*4 -1 ;
+			let p = ((j > 1 ? j -1 : j)*width + i)*4 - 1;
+			if(imgData.data[p] !== 0) {
+				left = i
+				break;
+			}
+		}
+  }
+
+
+	let cvs = document.createElement('canvas');
+	const w = right - left, h = bottom - top;
+	cvs.width = width;
+	cvs.height = height;
+	const ctx = cvs.getContext('2d');
+	ctx.putImageData(imgData, 0, 0);
+
+	let newData = ctx.getImageData(left, top, w, h);
+
+
+	let cvs1 = document.createElement('canvas');
+	cvs1.width = w;
+	cvs1.height = h;
+	const ctx1 = cvs1.getContext('2d');
+	ctx1.putImageData(newData, 0, 0);
+
+	downloadFile(cvs1.toDataURL('image/png'));
+
+}
+
+$('#download').click(function() {
+	// var src = $('#canvas')[0].toDataURL('image/png');
+	
+	const bg = document.getElementById('canvas');
+	const bgCtx = bg.getContext('2d');
+
+
+	const mask = document.getElementById('canvas1');
+	const maskCtx = mask.getContext('2d');
+
+const width = bg.width, height = bg.height;
+
+	var bgImageData=bgCtx.getImageData(0,0,width, height);
+	const maskImageData = maskCtx.getImageData(0,0,mask.width,mask.height);
+
+	var copyData =bgCtx.createImageData(bgImageData);
+
+	const pointLen = maskImageData.data.length;
+
+
+
+let top = 0, left = 0, right = bg.width, bottom = bg.height;
+for (var i=0;i<pointLen;i+=4)
+  {
+		
+		copyData.data[i] = bgImageData.data[i]
+		copyData.data[i+1] = bgImageData.data[i+1]
+		copyData.data[i+2] = bgImageData.data[i+2]
+		copyData.data[i+3] = bgImageData.data[i+3]
+		if(maskImageData.data[i+3] == 0) {
+		
+			copyData.data[i] = 0
+		copyData.data[i+1] =0
+		copyData.data[i+2] = 0
+		copyData.data[i+3] = 0
+		}
+		
+		
+  }
+
+	// bgCtx.putImageData(copyData,0,0);
+	saveFromCanvas(copyData)
+
+
+
+})
+
+		</script>
+</body>
+</html>
